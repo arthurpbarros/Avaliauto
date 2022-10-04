@@ -1,0 +1,47 @@
+version: '3'
+services:
+   front:
+      build:
+          context: ./frontend
+          dockerfile: Dockerfile
+      container_name: front
+      image: avaliauto/frontend:latest
+      ports: 
+         - 80:80 
+      networks:
+         - default
+      restart: always
+      depends_on:
+         - back
+
+   back:
+      build:
+         context: ./backend
+         dockerfile: Dockerfile
+      container_name: back
+      image: avaliauto/backend:latest
+      ports: 
+         - 4000:4000
+      networks:
+         - default
+      restart: always
+      depends_on:
+         - sgbd
+
+   sgbd:
+      build:
+         context: ./database
+         dockerfile: Dockerfile
+      container_name: sgbd
+      image: avaliauto/database:latest
+      ports: 
+         - 3306:3306
+      networks:
+         - default
+      restart: always
+      volumes:
+         - /mysqlBackup:/usr/lib/mysql
+
+networks:
+           default:
+              driver: bridge
